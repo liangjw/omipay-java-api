@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.matrix.omipay.request.JsapiOrderRequest;
 import com.matrix.omipay.response.ExchangeRateResponse;
 import com.matrix.omipay.response.JsapiOrderResponse;
+import com.matrix.omipay.response.PayNotifyResponse;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -107,6 +108,17 @@ public class OmipayClient {
             }
         }
         throw new OmipayException("can not generate jsapi order");
+    }
+
+    /**
+     * 检查支付回调数据是否合法
+     * @param response
+     * @return
+     */
+    public Boolean checkPayNotifyResponse(PayNotifyResponse response){
+        String signKey = OmipayUtil.generateSignKey(omipayConfig.getmNumber(),response.getTimestamp().toString(),
+                response.getNonce_str(),omipayConfig.getSecretKey());
+        return signKey.equals(response.getSign());
     }
 
     /**

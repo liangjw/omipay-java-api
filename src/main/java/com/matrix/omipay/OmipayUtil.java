@@ -79,5 +79,5 @@ public class OmipayUtil {
                 nNumber,timestamp,randomStr,signKey
         );
     }
-    
+
 }

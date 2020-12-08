@@ -14,7 +14,7 @@ public class JsapiOrderRequest {
 
     String notify_url;
 
-    String redirectUrl;
+    String redirect_url;
 
     String out_order_no;
 
@@ -54,12 +54,12 @@ public class JsapiOrderRequest {
         this.notify_url = notify_url;
     }
 
-    public String getRedirectUrl() {
-        return redirectUrl;
+    public String getRedirect_url() {
+        return redirect_url;
     }
 
-    public void setRedirectUrl(String redirectUrl) {
-        this.redirectUrl = redirectUrl;
+    public void setRedirect_url(String redirect_url) {
+        this.redirect_url = redirect_url;
     }
 
     public String getOut_order_no() {
