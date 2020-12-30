@@ -2,8 +2,10 @@ package com.matrix.omipay;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.matrix.omipay.request.JsapiOrderRequest;
+import com.matrix.omipay.request.MiniProgramOrderRequest;
 import com.matrix.omipay.response.ExchangeRateResponse;
 import com.matrix.omipay.response.JsapiOrderResponse;
+import com.matrix.omipay.response.MiniprogramOrderResponse;
 import com.matrix.omipay.response.PayNotifyResponse;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -108,6 +110,35 @@ public class OmipayClient {
             }
         }
         throw new OmipayException("can not generate jsapi order");
+    }
+
+    /**
+     * 生成小程序支付订单
+     * @param request
+     * @return
+     */
+    public MiniprogramOrderResponse createMiniprogramOrder(MiniProgramOrderRequest request){
+        Map<String, Object> map = om.convertValue(request, Map.class);
+        String signUrlstr = OmipayUtil.generateSignUrlstr(omipayConfig.getmNumber(),omipayConfig.getSecretKey());
+
+        StringBuilder urlBuilder = new StringBuilder().
+                append("https://www.omipay.com.cn/omipay/api/v2/MakeAppletOrder?")
+                .append(map2UriVariables(map))
+                .append(signUrlstr);
+
+
+        ResponseEntity<MiniprogramOrderResponse> res
+                = restTemplate.getForEntity(urlBuilder.toString(), MiniprogramOrderResponse.class);
+
+        if(res.getStatusCode() == HttpStatus.OK) {
+            MiniprogramOrderResponse rep = res.getBody();
+            if(rep.isSuccess()){
+                return rep;
+            }else {
+                throw new OmipayException(rep.getError_msg());
+            }
+        }
+        throw new OmipayException("can not generate miniprogram order");
     }
 
     /**
